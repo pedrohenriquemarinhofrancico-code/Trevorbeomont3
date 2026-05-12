@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purifique Sua Mente</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+background:
+linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.88)),
+url('https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+overflow:hidden;
+color:white;
+}
+
+.glow{
+position:absolute;
+width:500px;
+height:500px;
+background:rgba(255,215,0,.08);
+filter:blur(90px);
+border-radius:50%;
+animation:pulse 5s infinite alternate;
+}
+
+@keyframes pulse{
+from{transform:scale(1);}
+to{transform:scale(1.2);}
+}
+
+.quiz-box{
+position:relative;
+width:100%;
+max-width:520px;
+background:rgba(15,23,42,.82);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,215,0,.15);
+padding:35px;
+border-radius:30px;
+text-align:center;
+box-shadow:0 0 40px rgba(0,0,0,.6);
+animation:fade .8s ease;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.cross{
+font-size:45px;
+margin-bottom:10px;
+color:#FFD700;
+animation:float 2s infinite alternate;
+}
+
+@keyframes float{
+from{transform:translateY(0px);}
+to{transform:translateY(8px);}
+}
+
+h1{
+font-size:32px;
+margin-bottom:10px;
+color:#FFD700;
+}
+
+.subtitle{
+color:#d1d5db;
+line-height:1.6;
+margin-bottom:30px;
+font-size:15px;
+}
+
+.question{
+font-size:24px;
+margin-bottom:25px;
+line-height:1.5;
+}
+
+.answers button{
+width:100%;
+padding:16px;
+margin:10px 0;
+border:none;
+border-radius:16px;
+background:rgba(255,255,255,.06);
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+}
+
+.answers button:hover{
+background:#FFD700;
+color:black;
+transform:scale(1.03);
+}
+
+.progress{
+margin-top:20px;
+font-size:14px;
+color:#9ca3af;
+}
+
+.result{
+display:none;
+animation:fade .8s ease;
+}
+
+.result h2{
+font-size:30px;
+margin-bottom:15px;
+color:#FFD700;
+}
+
+.result p{
+line-height:1.7;
+font-size:17px;
+color:#f3f4f6;
+}
+
+.verse{
+margin-top:20px;
+font-style:italic;
+color:#FFD700;
+line-height:1.6;
+}
+
+.cta{
+margin-top:30px;
+display:inline-block;
+padding:17px 28px;
+background:#FFD700;
+color:black;
+font-weight:bold;
+text-decoration:none;
+border-radius:16px;
+transition:.3s;
+}
+
+.cta:hover{
+transform:scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<div class="quiz-box">
+
+<div class="cross">✝</div>
+
+<div id="quizArea">
+<h1>Purifique Sua Mente</h1>
+
+<p class="subtitle">
+Responda honestamente e descubra se certos desejos estão roubando sua paz espiritual.
+</p>
+
+<div class="question" id="question"></div>
+
+<div class="answers" id="answers"></div>
+
+<div class="progress" id="progress"></div>
+</div>
+
+<div class="result" id="resultArea">
+<h2>Seu Resultado</h2>
+
+<p id="resultText"></p>
+
+<div class="verse">
+“Vigiai e orai, para que não entreis em tentação.”<br>
+Mateus 26:41
+</div>
+
+<br>
+
+<button class="cta" onclick="redirectPage()">
+Mudar Minha Vida Agora
+</button>
+
+</div>
+</div>
+
+<script>
+const questions = [
+{
+question:'Você sente dificuldade em controlar pensamentos impuros?',
+answers:['Sim','Às vezes','Não']
+},
+{
+question:'Você sente que certos hábitos estão te afastando de Deus?',
+answers:['Muito','Um pouco','Não']
+},
+{
+question:'Você já tentou abandonar um vício mas voltou novamente?',
+answers:['Várias vezes','Poucas vezes','Nunca']
+},
+{
+question:'Você sente culpa após certos desejos ou atitudes?',
+answers:['Sempre','Às vezes','Raramente']
+},
+{
+question:'Você deseja ter mais disciplina espiritual?',
+answers:['Com certeza','Talvez','Não']
+}
+];
+
+let current = 0;
+let score = 0;
+
+const question = document.getElementById('question');
+const answers = document.getElementById('answers');
+const progress = document.getElementById('progress');
+
+function loadQuestion(){
+
+const q = questions[current];
+
+question.innerText = q.question;
+
+answers.innerHTML = '';
+
+q.answers.forEach((answer,index)=>{
+
+const btn = document.createElement('button');
+btn.innerText = answer;
+btn.onclick = ()=>selectAnswer(index);
+answers.appendChild(btn);
+
+});
+
+progress.innerText = `Pergunta ${current+1} de ${questions.length}`;
+}
+
+function selectAnswer(index){
+score += 2-index;
+current++;
+
+if(current < questions.length){
+loadQuestion();
+}else{
+showResult();
+}
+}
+
+function showResult(){
+
+document.getElementById('quizArea').style.display='none';
+document.getElementById('resultArea').style.display='block';
+
+const resultText = document.getElementById('resultText');
+
+if(score >= 8){
+resultText.innerText='Seus hábitos podem estar afetando sua mente, energia e propósito espiritual. Ainda há tempo de mudar.';
+}
+else if(score >=5){
+resultText.innerText='Você demonstra sinais de distrações e tentações que podem crescer com o tempo.';
+}
+else{
+resultText.innerText='Você parece manter certo controle espiritual, mas vigilância constante é essencial.';
+}
+}
+
+function redirectPage(){
+window.location.href = 'https://pedrohenriquemarinhofrancico-code.github.io/trevorbeomont2/';
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
